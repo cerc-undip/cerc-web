@@ -1,15 +1,20 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 export async function handleSignOut() {
-  // Clear the session cookie
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+  } catch {
+    // Fallback to clearing cookie directly if session is already invalid
+  }
+
   const cookieStore = await cookies();
-  
-  // Delete the better-auth session cookie
   cookieStore.delete("better-auth.session_token");
-  
-  // Redirect to login page
+
   redirect("/login");
 }

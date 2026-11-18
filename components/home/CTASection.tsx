@@ -13,14 +13,15 @@ export function CTASection() {
     ];
 
     const services = [
-        { label: "Web Development", href: "#" },
-        { label: "Network Engineering", href: "#" },
-        { label: "Hardware Projects", href: "#" },
+        { label: "Software Engineering", href: "/divisions/software" },
+        { label: "Computer Networks", href: "/divisions/network" },
+        { label: "Embedded Systems", href: "/divisions/embedded" },
+        { label: "Multimedia", href: "/divisions/multimedia" },
     ];
 
     const socials = [
         { icon: Github, href: "https://github.com/cerc-undip", label: "GitHub" },
-        { icon: Linkedin, href: "#", label: "LinkedIn" },
+        { icon: Linkedin, href: "https://linkedin.com/company/cerc-undip", label: "LinkedIn" },
         { icon: Instagram, href: "https://instagram.com/cercundip", label: "Instagram" },
         { icon: Mail, href: "mailto:cerc@undip.ac.id", label: "Email" },
     ];
@@ -35,7 +36,7 @@ export function CTASection() {
                         <div className="py-16 md:py-20 lg:py-24 text-center">
                             {/* Headline - matching website bold style */}
                             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-4">
-                                Let's Build
+                                Let&apos;s Build
                             </h2>
                             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-8 text-neutral-400 dark:text-neutral-500">
                                 Something Together

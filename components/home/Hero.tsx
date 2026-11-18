@@ -2,7 +2,6 @@
 
 import React, { useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
     AppWindow,
     Cpu,
@@ -58,7 +57,7 @@ interface HeroProps {
     divisions?: Division[];
 }
 
-export function Hero({ members = [], divisions = [] }: HeroProps) {
+export function Hero({ divisions = [] }: HeroProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {

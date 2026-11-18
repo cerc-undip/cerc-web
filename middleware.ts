@@ -4,14 +4,13 @@ import type { NextRequest } from "next/server";
 // Routes that require authentication
 const protectedRoutes = ["/admin"];
 
-// Routes that should redirect to admin if already authenticated
-const authRoutes = ["/login"];
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Get the session cookie (better-auth uses this cookie name by default)
-  const sessionCookie = request.cookies.get("better-auth.session_token");
+  // Get the session cookie (better-auth uses this cookie name by default, or __Secure- in HTTPS production)
+  const sessionCookie =
+    request.cookies.get("better-auth.session_token") ||
+    request.cookies.get("__Secure-better-auth.session_token");
   const isAuthenticated = !!sessionCookie?.value;
 
   // Check if accessing protected routes without authentication
@@ -23,13 +22,6 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
-  }
-
-  // Check if accessing auth routes while authenticated
-  const isAuthRoute = authRoutes.some(route => pathname === route);
-  
-  if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   // Add security headers

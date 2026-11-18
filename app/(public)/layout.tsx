@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ConditionalFooter } from "@/components/public/conditional-footer";
 import ReactLenis from "lenis/react";
 
 export default function PublicLayout({
@@ -17,7 +17,7 @@ export default function PublicLayout({
           {children}
       </main>
       
-      {/* <Footer /> */}
+      <ConditionalFooter />
     </>
   );
 }

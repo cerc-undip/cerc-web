@@ -1,10 +1,23 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+
+async function requireSession() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+  return session;
+}
 
 // --- SYSTEM INITIALIZATION (Fixes the Build Error) ---
 export async function initializeSystem() {
+  await requireSession();
   const divisions = [
     { 
       title: "Software Engineering", 
@@ -49,6 +62,7 @@ export async function initializeSystem() {
 
 // --- DIVISIONS (Create/Update/Delete) ---
 export async function createDivision(formData: FormData) {
+  await requireSession();
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
   const description = formData.get("description") as string;
@@ -61,6 +75,7 @@ export async function createDivision(formData: FormData) {
 }
 
 export async function updateDivision(formData: FormData) {
+  await requireSession();
   const id = formData.get("id") as string;
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
@@ -75,11 +90,13 @@ export async function updateDivision(formData: FormData) {
 }
 
 export async function deleteDivision(id: string) {
+  await requireSession();
   await prisma.division.delete({ where: { id } });
   revalidatePath("/admin/divisions");
 }
 
 export async function reorderDivisions(orderData: { id: string; order: number }[]) {
+  await requireSession();
   // Update each division's order in a transaction
   await prisma.$transaction(
     orderData.map(({ id, order }) =>
@@ -95,6 +112,7 @@ export async function reorderDivisions(orderData: { id: string; order: number }[
 
 // --- PROJECTS ---
 export async function createProject(formData: FormData) {
+  await requireSession();
   const divisionId = formData.get("divisionId") as string;
   
   await prisma.project.create({
@@ -112,6 +130,7 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(formData: FormData) {
+  await requireSession();
   const id = formData.get("id") as string;
 
   await prisma.project.update({
@@ -130,11 +149,13 @@ export async function updateProject(formData: FormData) {
 }
 
 export async function deleteProject(id: string) {
+  await requireSession();
   await prisma.project.delete({ where: { id } });
   revalidatePath("/admin/projects");
 }
 
 export async function reorderProjects(orderData: { id: string; order: number }[]) {
+  await requireSession();
   await prisma.$transaction(
     orderData.map(({ id, order }) =>
       prisma.project.update({ where: { id }, data: { order } })
@@ -146,6 +167,7 @@ export async function reorderProjects(orderData: { id: string; order: number }[]
 
 // --- MEMBERS ---
 export async function createMember(formData: FormData) {
+  await requireSession();
   const divisionId = formData.get("divisionId") as string;
 
   await prisma.member.create({
@@ -162,6 +184,7 @@ export async function createMember(formData: FormData) {
 }
 
 export async function updateMember(formData: FormData) {
+  await requireSession();
   const id = formData.get("id") as string;
 
   await prisma.member.update({
@@ -179,11 +202,13 @@ export async function updateMember(formData: FormData) {
 }
 
 export async function deleteMember(id: string) {
+  await requireSession();
   await prisma.member.delete({ where: { id } });
   revalidatePath("/admin/members");
 }
 
 export async function reorderMembers(orderData: { id: string; order: number }[]) {
+  await requireSession();
   await prisma.$transaction(
     orderData.map(({ id, order }) =>
       prisma.member.update({ where: { id }, data: { order } })
@@ -195,6 +220,7 @@ export async function reorderMembers(orderData: { id: string; order: number }[])
 
 // --- ACHIEVEMENTS ---
 export async function createAchievement(formData: FormData) {
+  await requireSession();
   const divisionId = formData.get("divisionId") as string;
 
   await prisma.achievement.create({
@@ -213,6 +239,7 @@ export async function createAchievement(formData: FormData) {
 }
 
 export async function updateAchievement(formData: FormData) {
+  await requireSession();
   const id = formData.get("id") as string;
 
   await prisma.achievement.update({
@@ -232,11 +259,13 @@ export async function updateAchievement(formData: FormData) {
 }
 
 export async function deleteAchievement(id: string) {
+  await requireSession();
   await prisma.achievement.delete({ where: { id } });
   revalidatePath("/admin/achievements");
 }
 
 export async function reorderAchievements(orderData: { id: string; order: number }[]) {
+  await requireSession();
   await prisma.$transaction(
     orderData.map(({ id, order }) =>
       prisma.achievement.update({ where: { id }, data: { order } })
@@ -248,6 +277,7 @@ export async function reorderAchievements(orderData: { id: string; order: number
 
 // --- TECH STACK ---
 export async function createTechStack(formData: FormData) {
+  await requireSession();
   const divisionId = formData.get("divisionId") as string;
 
   await prisma.techStack.create({
@@ -262,11 +292,13 @@ export async function createTechStack(formData: FormData) {
 }
 
 export async function deleteTechStack(id: string) {
+  await requireSession();
   await prisma.techStack.delete({ where: { id } });
   revalidatePath("/admin/tech-stack");
 }
 
 export async function updateTechStack(formData: FormData) {
+  await requireSession();
   const id = formData.get("id") as string;
 
   await prisma.techStack.update({
@@ -283,6 +315,7 @@ export async function updateTechStack(formData: FormData) {
 }
 
 export async function reorderTechStack(orderData: { id: string; order: number }[]) {
+  await requireSession();
   await prisma.$transaction(
     orderData.map(({ id, order }) =>
       prisma.techStack.update({ where: { id }, data: { order } })

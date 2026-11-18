@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Map, Send, BarChart3, Trophy, Laptop, CheckCircle2 } from "lucide-react";
+import { Map, Send, BarChart3, Trophy, CheckCircle2 } from "lucide-react";
 
 /**
  * Data fitur disesuaikan dengan fungsi utama sistem CERC LMS.

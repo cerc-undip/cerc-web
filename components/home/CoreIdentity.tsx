@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { Cpu, FlaskConical, Zap, Code2, Network, Layers, CheckCircle2 } from "lucide-react";
+import { motion, useInView, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { FlaskConical, Code2, Network, Layers } from "lucide-react";
 
 // Animation variants tetap sama
 const containerVariants = {
@@ -10,15 +10,6 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-    }
-};
-
-const fadeUpVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }
     }
 };
 
@@ -70,39 +61,81 @@ const bentoCards = [
     },
 ];
 
+const headlineWords = [
+    "CERC",
+    "empowers",
+    "🎓\u00A0students,",
+    "🔬\u00A0researchers,",
+    "and",
+    "💡\u00A0innovators",
+    "to",
+    "master",
+    "technology",
+    "from",
+    "circuits",
+    "to",
+    "code,",
+    "while",
+    "building",
+    "real-world",
+    "solutions.",
+];
+
+function ScrollRevealWord({
+    word,
+    progress,
+    range,
+}: {
+    word: string;
+    progress: MotionValue<number>;
+    range: [number, number];
+}) {
+    const opacity = useTransform(progress, range, [0.25, 1]);
+
+    return (
+        <span className="relative inline-block mr-[0.26em]">
+            <motion.span style={{ opacity }} className="inline-block">
+                {word}
+            </motion.span>
+        </span>
+    );
+}
+
 export function CoreIdentity() {
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const cardsRef = useRef<HTMLDivElement>(null);
 
-    const headerInView = useInView(headerRef, { once: true, margin: "-100px" });
     const cardsInView = useInView(cardsRef, { once: true, margin: "-50px" });
+    const { scrollYProgress } = useScroll({
+        target: headerRef,
+        offset: ["start 0.85", "end 0.45"],
+    });
 
     return (
         <section ref={sectionRef} className="relative py-16 md:py-20 bg-neutral-50 dark:bg-neutral-950 overflow-hidden border-t border-border">
             <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
 
                 {/* ========== HEADLINE ========== */}
-                <motion.div
+                <div
                     ref={headerRef}
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate={headerInView ? "visible" : "hidden"}
                     className="text-center max-w-4xl mx-auto mb-16 md:mb-20"
                 >
-                    <motion.h2
-                        variants={fadeUpVariants}
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-neutral-800 dark:text-neutral-200"
-                    >
-                        CERC empowers{" "}
-                        <span className="text-neutral-900 dark:text-white">🎓 students</span>,{" "}
-                        <span className="text-neutral-900 dark:text-white">🔬 researchers</span>, and{" "}
-                        <span className="text-neutral-900 dark:text-white">💡 innovators</span>{" "}
-                        <span className="text-neutral-400 dark:text-neutral-500">
-                            to master technology from circuits to code, while building real-world solutions.
-                        </span>
-                    </motion.h2>
-                </motion.div>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-neutral-900 dark:text-white">
+                        {headlineWords.map((word, index) => {
+                            const start = index / headlineWords.length;
+                            const end = start + 1 / headlineWords.length;
+                            return (
+                                <ScrollRevealWord
+                                    key={`${word}-${index}`}
+                                    word={word}
+                                    progress={scrollYProgress}
+                                    range={[start, end]}
+                                />
+                            );
+                        })}
+                    </h2>
+                </div>
 
                 {/* ========== BENTO GRID (2X2 CONFIGURATION) ========== */}
                 <motion.div
