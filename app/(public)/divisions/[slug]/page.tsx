@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ProjectCard, MemberCard, AchievementCard } from "@/components/divisions-card";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const iconMap: Record<string, React.ElementType> = {
   AppWindow, Network, Cpu, Clapperboard, FolderKanban
