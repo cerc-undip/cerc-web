@@ -58,6 +58,7 @@ export async function initializeSystem() {
   }
 
   revalidatePath("/admin");
+  revalidatePath("/divisions");
 }
 
 // --- DIVISIONS (Create/Update/Delete) ---
@@ -72,6 +73,7 @@ export async function createDivision(formData: FormData) {
     data: { title, slug, description, iconName },
   });
   revalidatePath("/admin/divisions");
+  revalidatePath("/divisions");
 }
 
 export async function updateDivision(formData: FormData) {
@@ -87,12 +89,14 @@ export async function updateDivision(formData: FormData) {
     data: { title, slug, description, iconName },
   });
   revalidatePath("/admin/divisions");
+  revalidatePath("/divisions");
 }
 
 export async function deleteDivision(id: string) {
   await requireSession();
   await prisma.division.delete({ where: { id } });
   revalidatePath("/admin/divisions");
+  revalidatePath("/divisions");
 }
 
 export async function reorderDivisions(orderData: { id: string; order: number }[]) {
